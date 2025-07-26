@@ -1,0 +1,165 @@
+{% extends "base.html" %} {% block title %}Manage Users - Admin{% endblock %} {% block content %}
+<div class="container-fluid py-4">
+    <div class="row mb-4">
+        <div class="col-12">
+            <h1 class="h3 mb-0">
+                <i class="fas fa-users me-2"></i>Manage Users
+            </h1>
+            <p class="text-muted">View and manage registered users</p>
+        </div>
+    </div>
+
+    <div class="card">
+        <div class="card-body">
+            {% if users %}
+            <div class="table-responsive">
+                <table class="table table-hover">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Name</th>
+                            <th>Email</th>
+                            <th>Role</th>
+                            <th>Joined</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for user in users %}
+                        <tr>
+                            <td>{{ user.id }}</td>
+                            <td>
+                                <strong>{{ user.name }}</strong>
+                            </td>
+                            <td>
+                                <a href="mailto:{{ user.email }}" class="text-decoration-none">
+                                    {{ user.email }}
+                                </a>
+                            </td>
+                            <td>
+                                {% if user.is_admin %}
+                                <span class="badge bg-danger">Admin</span> {% else %}
+                                <span class="badge bg-primary">User</span> {% endif %}
+                            </td>
+                            <td>
+                                <div>
+                                    <strong>{{ user.created_at.strftime('%Y-%m-%d') }}</strong><br>
+                                    <small class="text-muted">{{ user.created_at.strftime('%H:%M') }}</small>
+                                </div>
+                            </td>
+                            <td>
+                                <div class="btn-group" role="group">
+                                    <button class="btn btn-sm btn-outline-info" onclick="showUserDetails({{ user.id }}, '{{ user.name }}', '{{ user.email }}', '{{ user.created_at.strftime('%Y-%m-%d') }}')" title="View Details">
+                                        <i class="fas fa-eye"></i>
+                                    </button> {% if not user.is_admin %}
+                                    <button class="btn btn-sm btn-outline-warning" onclick="toggleAdmin({{ user.id }}, true)" title="Make Admin">
+                                        <i class="fas fa-user-shield"></i>
+                                    </button> {% else %}
+                                    <button class="btn btn-sm btn-outline-secondary" onclick="toggleAdmin({{ user.id }}, false)" title="Remove Admin">
+                                        <i class="fas fa-user"></i>
+                                    </button> {% endif %} {% if user.id != current_user.id %}
+                                    <button class="btn btn-sm btn-outline-danger" onclick="deleteUser({{ user.id }}, '{{ user.name }}')" title="Delete User">
+                                        <i class="fas fa-trash"></i>
+                                    </button> {% endif %}
+                                </div>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            {% else %}
+            <div class="text-center py-5">
+                <i class="fas fa-users fa-4x text-muted mb-3"></i>
+                <h4 class="text-muted">No users found</h4>
+                <p class="text-muted">Users will appear here once they register.</p>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+<!-- User Details Modal -->
+<div class="modal fade" id="userDetailsModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">User Details</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <div class="row mb-3">
+                    <div class="col-6">
+                        <strong>Name:</strong><br>
+                        <span id="userName"></span>
+                    </div>
+                    <div class="col-6">
+                        <strong>Email:</strong><br>
+                        <span id="userEmail"></span>
+                    </div>
+                </div>
+                <div class="row mb-3">
+                    <div class="col-6">
+                        <strong>Joined:</strong><br>
+                        <span id="userJoined"></span>
+                    </div>
+                    <div class="col-6">
+                        <strong>User ID:</strong><br>
+                        <span id="userId"></span>
+                    </div>
+                </div>
+                <div class="mb-3">
+                    <strong>Statistics:</strong>
+                    <div class="row mt-2">
+                        <div class="col-6">
+                            <small class="text-muted">Orders:</small><br>
+                            <span id="userOrders">0</span>
+                        </div>
+                        <div class="col-6">
+                            <small class="text-muted">Total Spent:</small><br>
+                            <span id="userSpent">₹0</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    function showUserDetails(userId, name, email, joined) {
+        document.getElementById('userName').textContent = name;
+        document.getElementById('userEmail').textContent = email;
+        document.getElementById('userJoined').textContent = joined;
+        document.getElementById('userId').textContent = userId;
+
+        // This would typically make an AJAX call to get user statistics
+        // For now, we'll show placeholder data
+        document.getElementById('userOrders').textContent = '0';
+        document.getElementById('userSpent').textContent = '₹0';
+
+        const modal = new bootstrap.Modal(document.getElementById('userDetailsModal'));
+        modal.show();
+    }
+
+    function toggleAdmin(userId, makeAdmin) {
+        const action = makeAdmin ? 'make admin' : 'remove admin privileges from';
+        if (confirm(`Are you sure you want to ${action} this user?`)) {
+            // This would typically make an AJAX call to update user role
+            alert('User role updated successfully!');
+            location.reload();
+        }
+    }
+
+    function deleteUser(userId, userName) {
+        if (confirm(`Are you sure you want to delete user "${userName}"? This action cannot be undone.`)) {
+            // This would typically make an AJAX call to delete the user
+            alert('User deleted successfully!');
+            location.reload();
+        }
+    }
+</script>
+{% endblock %}

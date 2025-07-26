@@ -1,0 +1,135 @@
+{% extends "base.html" %} {% block title %}Add New Project - Admin{% endblock %} {% block content %}
+<div class="container-fluid py-4">
+    <div class="row mb-4">
+        <div class="col-12">
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="{{ url_for('admin_dashboard') }}">Dashboard</a></li>
+                    <li class="breadcrumb-item"><a href="{{ url_for('admin_projects') }}">Projects</a></li>
+                    <li class="breadcrumb-item active">Add New Project</li>
+                </ol>
+            </nav>
+            <h1 class="h3 mb-0">
+                <i class="fas fa-plus me-2"></i>Add New Project
+            </h1>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-lg-8">
+            <div class="card">
+                <div class="card-body">
+                    <form method="POST" enctype="multipart/form-data">
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="title" class="form-label">Project Title *</label>
+                                <input type="text" class="form-control" id="title" name="title" required>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label for="price" class="form-label">Price (₹) *</label>
+                                <input type="number" class="form-control" id="price" name="price" min="0" step="0.01" required>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-4 mb-3">
+                                <label for="category" class="form-label">Category *</label>
+                                <select class="form-select" id="category" name="category" required>
+                                    <option value="">Select Category</option>
+                                    <option value="Web Development">Web Development</option>
+                                    <option value="Mobile App">Mobile App</option>
+                                    <option value="Desktop Application">Desktop Application</option>
+                                    <option value="AI & Machine Learning">AI & Machine Learning</option>
+                                    <option value="Data Science">Data Science</option>
+                                    <option value="IoT">IoT</option>
+                                    <option value="Blockchain">Blockchain</option>
+                                    <option value="Game Development">Game Development</option>
+                                    <option value="Other">Other</option>
+                                </select>
+                            </div>
+                            <div class="col-md-4 mb-3">
+                                <label for="branch" class="form-label">Branch *</label>
+                                <select class="form-select" id="branch" name="branch" required>
+                                    <option value="">Select Branch</option>
+                                    <option value="Computer Science">Computer Science</option>
+                                    <option value="Information Technology">Information Technology</option>
+                                    <option value="Electronics & Communication">Electronics & Communication</option>
+                                    <option value="Electrical Engineering">Electrical Engineering</option>
+                                    <option value="Mechanical Engineering">Mechanical Engineering</option>
+                                    <option value="Civil Engineering">Civil Engineering</option>
+                                    <option value="Other">Other</option>
+                                </select>
+                            </div>
+                            <div class="col-md-4 mb-3">
+                                <label for="tech_stack" class="form-label">Technology Stack *</label>
+                                <input type="text" class="form-control" id="tech_stack" name="tech_stack" placeholder="e.g., HTML, CSS, JavaScript, PHP, MySQL" required>
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="description" class="form-label">Project Description *</label>
+                            <textarea class="form-control" id="description" name="description" rows="6" placeholder="Provide a detailed description of the project, its features, and what students will learn..." required></textarea>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="project_file" class="form-label">Project File (ZIP/PDF) *</label>
+                                <input type="file" class="form-control" id="project_file" name="project_file" accept=".zip,.pdf" required>
+                                <div class="form-text">Upload the project files in ZIP format or documentation in PDF</div>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label for="preview_image" class="form-label">Preview Image</label>
+                                <input type="file" class="form-control" id="preview_image" name="preview_image" accept="image/*">
+                                <div class="form-text">Optional: Upload a preview image for the project</div>
+                            </div>
+                        </div>
+
+                        <div class="d-flex gap-2">
+                            <button type="submit" class="btn btn-primary">
+                                <i class="fas fa-save me-2"></i>Save Project
+                            </button>
+                            <a href="{{ url_for('admin_projects') }}" class="btn btn-outline-secondary">
+                                <i class="fas fa-times me-2"></i>Cancel
+                            </a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-4">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="mb-0">
+                        <i class="fas fa-info-circle me-2"></i>Guidelines
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <h6>Project File Requirements:</h6>
+                    <ul class="small">
+                        <li>Upload complete source code in ZIP format</li>
+                        <li>Include all necessary files and folders</li>
+                        <li>Maximum file size: 16MB</li>
+                        <li>Supported formats: ZIP, PDF</li>
+                    </ul>
+
+                    <h6>Description Guidelines:</h6>
+                    <ul class="small">
+                        <li>Provide clear project overview</li>
+                        <li>List main features and functionality</li>
+                        <li>Include setup instructions</li>
+                        <li>Mention learning outcomes</li>
+                    </ul>
+
+                    <h6>Technology Stack:</h6>
+                    <ul class="small">
+                        <li>Separate technologies with commas</li>
+                        <li>Include versions if relevant</li>
+                        <li>List all major technologies used</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

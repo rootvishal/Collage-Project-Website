@@ -1,0 +1,201 @@
+{% extends "base.html" %} {% block title %}Projects - College Projects Store{% endblock %} {% block content %}
+<div class="container py-5">
+    <div class="row">
+        <!-- Filters Sidebar -->
+        <div class="col-lg-3">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="mb-0"><i class="fas fa-filter me-2"></i>Filters</h5>
+                </div>
+                <div class="card-body">
+                    <form method="GET" action="{{ url_for('projects') }}">
+                        <!-- Category Filter -->
+                        <div class="mb-3">
+                            <label class="form-label fw-bold">Category</label>
+                            <select name="category" class="form-select">
+                                <option value="">All Categories</option>
+                                {% for category in categories %}
+                                <option value="{{ category[0] }}" {% if request.args.get('category') == category[0] %}selected{% endif %}>
+                                    {{ category[0] }}
+                                </option>
+                                {% endfor %}
+                            </select>
+                        </div>
+
+                        <!-- Tech Stack Filter -->
+                        <div class="mb-3">
+                            <label class="form-label fw-bold">Technology</label>
+                            <select name="tech_stack" class="form-select">
+                                <option value="">All Technologies</option>
+                                {% for tech in tech_stacks %}
+                                <option value="{{ tech[0] }}" {% if request.args.get('tech_stack') == tech[0] %}selected{% endif %}>
+                                    {{ tech[0] }}
+                                </option>
+                                {% endfor %}
+                            </select>
+                        </div>
+
+                        <!-- Branch Filter -->
+                        <div class="mb-3">
+                            <label class="form-label fw-bold">Branch</label>
+                            <select name="branch" class="form-select">
+                                <option value="">All Branches</option>
+                                {% for branch in branches %}
+                                <option value="{{ branch[0] }}" {% if request.args.get('branch') == branch[0] %}selected{% endif %}>
+                                    {{ branch[0] }}
+                                </option>
+                                {% endfor %}
+                            </select>
+                        </div>
+
+                        <!-- Price Range -->
+                        <div class="mb-3">
+                            <label class="form-label fw-bold">Price Range</label>
+                            <div class="row">
+                                <div class="col-6">
+                                    <input type="number" name="min_price" class="form-control" placeholder="Min" value="{{ request.args.get('min_price', '') }}">
+                                </div>
+                                <div class="col-6">
+                                    <input type="number" name="max_price" class="form-control" placeholder="Max" value="{{ request.args.get('max_price', '') }}">
+                                </div>
+                            </div>
+                        </div>
+
+                        <button type="submit" class="btn btn-primary w-100">
+                            <i class="fas fa-search me-2"></i>Apply Filters
+                        </button> {% if request.args %}
+                        <a href="{{ url_for('projects') }}" class="btn btn-outline-secondary w-100 mt-2">
+                            <i class="fas fa-times me-2"></i>Clear Filters
+                        </a>
+                        {% endif %}
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <!-- Projects Grid -->
+        <div class="col-lg-9">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <div>
+                    <h2 class="mb-1">All Projects</h2>
+                    <p class="text-muted mb-0">{{ projects|length }} project{{ 's' if projects|length != 1 else '' }} found</p>
+                </div>
+                <div class="d-flex gap-2">
+                    <button class="btn btn-outline-primary" onclick="toggleView('grid')">
+                        <i class="fas fa-th"></i>
+                    </button>
+                    <button class="btn btn-outline-primary" onclick="toggleView('list')">
+                        <i class="fas fa-list"></i>
+                    </button>
+                </div>
+            </div>
+
+            {% if projects %}
+            <div class="row g-4" id="projects-grid">
+                {% for project in projects %}
+                <div class="col-lg-4 col-md-6">
+                    <div class="card h-100">
+                        {% if project.preview_image %}
+                        <img src="{{ url_for('uploaded_file', filename=project.preview_image) }}" class="card-img-top" alt="{{ project.title }}" style="height: 200px; object-fit: cover;"> {% else %}
+                        <div class="card-img-top bg-light d-flex align-items-center justify-content-center" style="height: 200px;">
+                            <i class="fas fa-file-code fa-3x text-muted"></i>
+                        </div>
+                        {% endif %}
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between align-items-start mb-2">
+                                <span class="badge bg-primary">{{ project.category }}</span>
+                                <span class="price-tag">₹{{ "%.0f"|format(project.price) }}</span>
+                            </div>
+                            <h5 class="card-title">{{ project.title }}</h5>
+                            <p class="card-text text-muted">{{ project.description[:100] }}{% if project.description|length > 100 %}...{% endif %}</p>
+                            <div class="mb-3">
+                                <small class="text-muted">
+                                    <i class="fas fa-tags me-1"></i>{{ project.tech_stack }}
+                                </small>
+                            </div>
+                            <div class="d-flex justify-content-between align-items-center">
+                                <small class="text-muted">
+                                    <i class="fas fa-graduation-cap me-1"></i>{{ project.branch }}
+                                </small>
+                                <a href="{{ url_for('project_detail', project_id=project.id) }}" class="btn btn-outline-primary btn-sm">
+                                    View Details
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+
+            <div class="row" id="projects-list" style="display: none;">
+                {% for project in projects %}
+                <div class="col-12 mb-3">
+                    <div class="card">
+                        <div class="row g-0">
+                            <div class="col-md-3">
+                                {% if project.preview_image %}
+                                <img src="{{ url_for('uploaded_file', filename=project.preview_image) }}" class="img-fluid rounded-start h-100" alt="{{ project.title }}" style="object-fit: cover;"> {% else %}
+                                <div class="bg-light d-flex align-items-center justify-content-center h-100">
+                                    <i class="fas fa-file-code fa-3x text-muted"></i>
+                                </div>
+                                {% endif %}
+                            </div>
+                            <div class="col-md-9">
+                                <div class="card-body">
+                                    <div class="d-flex justify-content-between align-items-start mb-2">
+                                        <span class="badge bg-primary">{{ project.category }}</span>
+                                        <span class="price-tag">₹{{ "%.0f"|format(project.price) }}</span>
+                                    </div>
+                                    <h5 class="card-title">{{ project.title }}</h5>
+                                    <p class="card-text">{{ project.description }}</p>
+                                    <div class="row">
+                                        <div class="col-md-4">
+                                            <small class="text-muted">
+                                                <i class="fas fa-tags me-1"></i>{{ project.tech_stack }}
+                                            </small>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <small class="text-muted">
+                                                <i class="fas fa-graduation-cap me-1"></i>{{ project.branch }}
+                                            </small>
+                                        </div>
+                                        <div class="col-md-4 text-end">
+                                            <a href="{{ url_for('project_detail', project_id=project.id) }}" class="btn btn-primary">
+                                                View Details
+                                            </a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+            {% else %}
+            <div class="text-center py-5">
+                <i class="fas fa-search fa-4x text-muted mb-3"></i>
+                <h4>No projects found</h4>
+                <p class="text-muted">Try adjusting your filters or browse all projects.</p>
+                <a href="{{ url_for('projects') }}" class="btn btn-primary">View All Projects</a>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+<script>
+    function toggleView(view) {
+        const gridView = document.getElementById('projects-grid');
+        const listView = document.getElementById('projects-list');
+
+        if (view === 'grid') {
+            gridView.style.display = 'flex';
+            listView.style.display = 'none';
+        } else {
+            gridView.style.display = 'none';
+            listView.style.display = 'block';
+        }
+    }
+</script>
+{% endblock %}

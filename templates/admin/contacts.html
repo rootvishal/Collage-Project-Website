@@ -1,0 +1,136 @@
+{% extends "base.html" %} {% block title %}Contact Messages - Admin{% endblock %} {% block content %}
+<div class="container-fluid py-4">
+    <div class="row mb-4">
+        <div class="col-12">
+            <h1 class="h3 mb-0">
+                <i class="fas fa-envelope me-2"></i>Contact Messages
+            </h1>
+            <p class="text-muted">View and manage customer inquiries and custom project requests</p>
+        </div>
+    </div>
+
+    <div class="card">
+        <div class="card-body">
+            {% if contacts %}
+            <div class="table-responsive">
+                <table class="table table-hover">
+                    <thead>
+                        <tr>
+                            <th>Date</th>
+                            <th>Name</th>
+                            <th>Email</th>
+                            <th>Subject</th>
+                            <th>Message</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for contact in contacts %}
+                        <tr>
+                            <td>
+                                <div>
+                                    <strong>{{ contact.created_at.strftime('%Y-%m-%d') }}</strong><br>
+                                    <small class="text-muted">{{ contact.created_at.strftime('%H:%M') }}</small>
+                                </div>
+                            </td>
+                            <td>
+                                <strong>{{ contact.name }}</strong>
+                            </td>
+                            <td>
+                                <a href="mailto:{{ contact.email }}" class="text-decoration-none">
+                                    {{ contact.email }}
+                                </a>
+                            </td>
+                            <td>
+                                <span class="badge bg-primary">{{ contact.subject }}</span>
+                            </td>
+                            <td>
+                                <button class="btn btn-sm btn-outline-info" onclick="showMessage('{{ contact.message|replace('\n', '\\n')|replace('" ', '\\ "') }}', '{{ contact.name }}', '{{ contact.email }}', '{{ contact.subject }}')">
+                                    <i class="fas fa-eye me-1"></i>View
+                                </button>
+                            </td>
+                            <td>
+                                <div class="btn-group" role="group">
+                                    <a href="mailto:{{ contact.email }}?subject=Re: {{ contact.subject }}" class="btn btn-sm btn-outline-primary" title="Reply">
+                                        <i class="fas fa-reply"></i>
+                                    </a>
+                                    <button class="btn btn-sm btn-outline-success" onclick="markAsRead({{ contact.id }})" title="Mark as Read">
+                                        <i class="fas fa-check"></i>
+                                    </button>
+                                </div>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            {% else %}
+            <div class="text-center py-5">
+                <i class="fas fa-envelope fa-4x text-muted mb-3"></i>
+                <h4 class="text-muted">No messages found</h4>
+                <p class="text-muted">Contact messages will appear here when customers send inquiries.</p>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+<!-- Message Details Modal -->
+<div class="modal fade" id="messageModal" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Message Details</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <div class="row mb-3">
+                    <div class="col-md-6">
+                        <strong>From:</strong> <span id="messageName"></span>
+                    </div>
+                    <div class="col-md-6">
+                        <strong>Email:</strong> <span id="messageEmail"></span>
+                    </div>
+                </div>
+                <div class="mb-3">
+                    <strong>Subject:</strong> <span id="messageSubject"></span>
+                </div>
+                <div class="mb-3">
+                    <strong>Message:</strong>
+                    <div class="border rounded p-3 mt-2" id="messageContent" style="background-color: #f8f9fa;">
+                        <!-- Message content will be loaded here -->
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <a href="#" id="replyLink" class="btn btn-primary">
+                    <i class="fas fa-reply me-2"></i>Reply
+                </a>
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    function showMessage(message, name, email, subject) {
+        document.getElementById('messageName').textContent = name;
+        document.getElementById('messageEmail').textContent = email;
+        document.getElementById('messageSubject').textContent = subject;
+        document.getElementById('messageContent').textContent = message;
+
+        // Set up reply link
+        const replyLink = document.getElementById('replyLink');
+        replyLink.href = `mailto:${email}?subject=Re: ${subject}`;
+
+        const modal = new bootstrap.Modal(document.getElementById('messageModal'));
+        modal.show();
+    }
+
+    function markAsRead(contactId) {
+        // This would typically make an AJAX call to mark the message as read
+        // For now, we'll just show a success message
+        alert('Message marked as read!');
+    }
+</script>
+{% endblock %}

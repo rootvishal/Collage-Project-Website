@@ -1,0 +1,155 @@
+{% extends "base.html" %} {% block title %}{{ project.title }} - College Projects Store{% endblock %} {% block content %}
+<div class="container py-5">
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="{{ url_for('home') }}">Home</a></li>
+            <li class="breadcrumb-item"><a href="{{ url_for('projects') }}">Projects</a></li>
+            <li class="breadcrumb-item active">{{ project.title }}</li>
+        </ol>
+    </nav>
+
+    <div class="row">
+        <!-- Project Images/Preview -->
+        <div class="col-lg-6 mb-4">
+            {% if project.preview_image %}
+            <div class="card">
+                <img src="{{ url_for('uploaded_file', filename=project.preview_image) }}" class="card-img-top" alt="{{ project.title }}" style="max-height: 400px; object-fit: cover;">
+            </div>
+            {% else %}
+            <div class="card">
+                <div class="card-body text-center py-5">
+                    <i class="fas fa-file-code fa-5x text-muted mb-3"></i>
+                    <h5 class="text-muted">No Preview Available</h5>
+                </div>
+            </div>
+            {% endif %}
+        </div>
+
+        <!-- Project Details -->
+        <div class="col-lg-6">
+            <div class="card">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-start mb-3">
+                        <span class="badge bg-primary fs-6">{{ project.category }}</span>
+                        <span class="price-tag fs-5">₹{{ "%.0f"|format(project.price) }}</span>
+                    </div>
+
+                    <h2 class="card-title mb-3">{{ project.title }}</h2>
+
+                    <div class="row mb-4">
+                        <div class="col-6">
+                            <small class="text-muted">
+                                <i class="fas fa-graduation-cap me-1"></i><strong>Branch:</strong><br>
+                                {{ project.branch }}
+                            </small>
+                        </div>
+                        <div class="col-6">
+                            <small class="text-muted">
+                                <i class="fas fa-calendar me-1"></i><strong>Uploaded:</strong><br>
+                                {{ project.uploaded_date.strftime('%B %d, %Y') }}
+                            </small>
+                        </div>
+                    </div>
+
+                    <div class="mb-4">
+                        <h6 class="fw-bold mb-2">
+                            <i class="fas fa-tags me-2"></i>Technologies Used
+                        </h6>
+                        <div class="d-flex flex-wrap gap-2">
+                            {% for tech in project.tech_stack.split(', ') %}
+                            <span class="badge bg-secondary">{{ tech.strip() }}</span> {% endfor %}
+                        </div>
+                    </div>
+
+                    <!-- Interest Section -->
+                    <div class="border-top pt-4">
+                        <div class="alert alert-info">
+                            <i class="fas fa-info-circle me-2"></i>
+                            <strong>Interested in this project?</strong><br> Fill out a quick form and our team will contact you with details, pricing, and timeline.
+                        </div>
+                        <a href="{{ url_for('project_inquiry', project_id=project.id) }}" class="btn btn-primary btn-lg w-100">
+                            <i class="fas fa-heart me-2"></i>I'm Interested
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Project Description -->
+    <div class="row mt-5">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header">
+                    <h4 class="mb-0">
+                        <i class="fas fa-info-circle me-2"></i>Project Description
+                    </h4>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-8">
+                            <h5>Overview</h5>
+                            <p class="lead">{{ project.description }}</p>
+
+                            <h5 class="mt-4">What's Included</h5>
+                            <ul class="list-unstyled">
+                                <li><i class="fas fa-check text-success me-2"></i>Complete source code</li>
+                                <li><i class="fas fa-check text-success me-2"></i>Detailed documentation</li>
+                                <li><i class="fas fa-check text-success me-2"></i>Setup instructions</li>
+                                <li><i class="fas fa-check text-success me-2"></i>Database schema</li>
+                                <li><i class="fas fa-check text-success me-2"></i>User manual</li>
+                                <li><i class="fas fa-check text-success me-2"></i>Technical specifications</li>
+                            </ul>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="card bg-light">
+                                <div class="card-body">
+                                    <h6 class="card-title">
+                                        <i class="fas fa-file-archive me-2"></i>Project Files
+                                    </h6>
+                                    <ul class="list-unstyled small">
+                                        <li><i class="fas fa-file-code me-2"></i>Source Code</li>
+                                        <li><i class="fas fa-file-pdf me-2"></i>Documentation</li>
+                                        <li><i class="fas fa-file-image me-2"></i>Screenshots</li>
+                                        <li><i class="fas fa-database me-2"></i>Database Files</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Related Projects -->
+    <div class="row mt-5">
+        <div class="col-12">
+            <h3 class="mb-4">Related Projects</h3>
+            <div class="row g-4">
+                {% for related_project in related_projects[:3] %}
+                <div class="col-lg-4 col-md-6">
+                    <div class="card h-100">
+                        {% if related_project.preview_image %}
+                        <img src="{{ url_for('uploaded_file', filename=related_project.preview_image) }}" class="card-img-top" alt="{{ related_project.title }}" style="height: 200px; object-fit: cover;"> {% else %}
+                        <div class="card-img-top bg-light d-flex align-items-center justify-content-center" style="height: 200px;">
+                            <i class="fas fa-file-code fa-3x text-muted"></i>
+                        </div>
+                        {% endif %}
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between align-items-start mb-2">
+                                <span class="badge bg-primary">{{ related_project.category }}</span>
+                                <span class="price-tag">₹{{ "%.0f"|format(related_project.price) }}</span>
+                            </div>
+                            <h6 class="card-title">{{ related_project.title }}</h6>
+                            <p class="card-text text-muted small">{{ related_project.description[:80] }}...</p>
+                            <a href="{{ url_for('project_detail', project_id=related_project.id) }}" class="btn btn-outline-primary btn-sm">View Details</a>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,134 @@
+{% extends "base.html" %} {% block title %}Edit Project - Admin{% endblock %} {% block content %}
+<div class="container-fluid py-4">
+    <div class="row mb-4">
+        <div class="col-12">
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="{{ url_for('admin_dashboard') }}">Dashboard</a></li>
+                    <li class="breadcrumb-item"><a href="{{ url_for('admin_projects') }}">Projects</a></li>
+                    <li class="breadcrumb-item active">Edit Project</li>
+                </ol>
+            </nav>
+            <h1 class="h3 mb-0">
+                <i class="fas fa-edit me-2"></i>Edit Project: {{ project.title }}
+            </h1>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-lg-8">
+            <div class="card">
+                <div class="card-body">
+                    <form method="POST" enctype="multipart/form-data">
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="title" class="form-label">Project Title *</label>
+                                <input type="text" class="form-control" id="title" name="title" value="{{ project.title }}" required>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label for="price" class="form-label">Price (₹) *</label>
+                                <input type="number" class="form-control" id="price" name="price" value="{{ project.price }}" min="0" step="0.01" required>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-4 mb-3">
+                                <label for="category" class="form-label">Category *</label>
+                                <select class="form-select" id="category" name="category" required>
+                                    <option value="">Select Category</option>
+                                    <option value="Web Development" {% if project.category == 'Web Development' %}selected{% endif %}>Web Development</option>
+                                    <option value="Mobile App" {% if project.category == 'Mobile App' %}selected{% endif %}>Mobile App</option>
+                                    <option value="Desktop Application" {% if project.category == 'Desktop Application' %}selected{% endif %}>Desktop Application</option>
+                                    <option value="AI & Machine Learning" {% if project.category == 'AI & Machine Learning' %}selected{% endif %}>AI & Machine Learning</option>
+                                    <option value="Data Science" {% if project.category == 'Data Science' %}selected{% endif %}>Data Science</option>
+                                    <option value="IoT" {% if project.category == 'IoT' %}selected{% endif %}>IoT</option>
+                                    <option value="Blockchain" {% if project.category == 'Blockchain' %}selected{% endif %}>Blockchain</option>
+                                    <option value="Game Development" {% if project.category == 'Game Development' %}selected{% endif %}>Game Development</option>
+                                    <option value="Other" {% if project.category == 'Other' %}selected{% endif %}>Other</option>
+                                </select>
+                            </div>
+                            <div class="col-md-4 mb-3">
+                                <label for="branch" class="form-label">Branch *</label>
+                                <select class="form-select" id="branch" name="branch" required>
+                                    <option value="">Select Branch</option>
+                                    <option value="Computer Science" {% if project.branch == 'Computer Science' %}selected{% endif %}>Computer Science</option>
+                                    <option value="Information Technology" {% if project.branch == 'Information Technology' %}selected{% endif %}>Information Technology</option>
+                                    <option value="Electronics & Communication" {% if project.branch == 'Electronics & Communication' %}selected{% endif %}>Electronics & Communication</option>
+                                    <option value="Electrical Engineering" {% if project.branch == 'Electrical Engineering' %}selected{% endif %}>Electrical Engineering</option>
+                                    <option value="Mechanical Engineering" {% if project.branch == 'Mechanical Engineering' %}selected{% endif %}>Mechanical Engineering</option>
+                                    <option value="Civil Engineering" {% if project.branch == 'Civil Engineering' %}selected{% endif %}>Civil Engineering</option>
+                                    <option value="Other" {% if project.branch == 'Other' %}selected{% endif %}>Other</option>
+                                </select>
+                            </div>
+                            <div class="col-md-4 mb-3">
+                                <label for="tech_stack" class="form-label">Technology Stack *</label>
+                                <input type="text" class="form-control" id="tech_stack" name="tech_stack" value="{{ project.tech_stack }}" required>
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="description" class="form-label">Project Description *</label>
+                            <textarea class="form-control" id="description" name="description" rows="6" required>{{ project.description }}</textarea>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="project_file" class="form-label">Project File (ZIP/PDF)</label>
+                                <input type="file" class="form-control" id="project_file" name="project_file" accept=".zip,.pdf">
+                                <div class="form-text">Leave empty to keep current file: {{ project.file_path }}</div>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label for="preview_image" class="form-label">Preview Image</label>
+                                <input type="file" class="form-control" id="preview_image" name="preview_image" accept="image/*">
+                                <div class="form-text">Leave empty to keep current image</div>
+                            </div>
+                        </div>
+
+                        <div class="d-flex gap-2">
+                            <button type="submit" class="btn btn-primary">
+                                <i class="fas fa-save me-2"></i>Update Project
+                            </button>
+                            <a href="{{ url_for('admin_projects') }}" class="btn btn-outline-secondary">
+                                <i class="fas fa-times me-2"></i>Cancel
+                            </a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-4">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="mb-0">
+                        <i class="fas fa-info-circle me-2"></i>Current Project Info
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <div class="mb-3">
+                        <strong>Current File:</strong><br>
+                        <small class="text-muted">{{ project.file_path }}</small>
+                    </div>
+
+                    {% if project.preview_image %}
+                    <div class="mb-3">
+                        <strong>Current Preview:</strong><br>
+                        <img src="{{ url_for('uploaded_file', filename=project.preview_image) }}" alt="Current preview" class="img-fluid rounded mt-2" style="max-height: 150px;">
+                    </div>
+                    {% endif %}
+
+                    <div class="mb-3">
+                        <strong>Uploaded:</strong><br>
+                        <small class="text-muted">{{ project.uploaded_date.strftime('%B %d, %Y') }}</small>
+                    </div>
+
+                    <div class="mb-3">
+                        <strong>Project ID:</strong><br>
+                        <small class="text-muted">#{{ project.id }}</small>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

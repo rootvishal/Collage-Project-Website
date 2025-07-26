@@ -1,0 +1,175 @@
+{% extends "base.html" %} {% block title %}Contact Us - College Projects Store{% endblock %} {% block content %}
+<div class="container py-5">
+    <div class="row">
+        <div class="col-lg-8">
+            <div class="card">
+                <div class="card-body p-5">
+                    <h2 class="fw-bold mb-4">
+                        <i class="fas fa-envelope me-2"></i>Contact Us
+                    </h2>
+                    <p class="lead text-muted mb-4">
+                        Have a question or need a custom project? We're here to help! Fill out the form below and we'll get back to you as soon as possible.
+                    </p>
+
+                    <form method="POST">
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="name" class="form-label">Full Name *</label>
+                                <input type="text" class="form-control" id="name" name="name" required>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label for="email" class="form-label">Email Address *</label>
+                                <input type="email" class="form-control" id="email" name="email" required>
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="subject" class="form-label">Subject *</label>
+                            <select class="form-select" id="subject" name="subject" required>
+                                <option value="">Select a subject</option>
+                                <option value="Custom Project Request">Custom Project Request</option>
+                                <option value="General Inquiry">General Inquiry</option>
+                                <option value="Technical Support">Technical Support</option>
+                                <option value="Payment Issue">Payment Issue</option>
+                                <option value="Other">Other</option>
+                            </select>
+                        </div>
+
+                        <div class="mb-4">
+                            <label for="message" class="form-label">Message *</label>
+                            <textarea class="form-control" id="message" name="message" rows="6" placeholder="Please describe your requirements or question in detail..." required></textarea>
+                        </div>
+
+                        <button type="submit" class="btn btn-primary btn-lg">
+                            <i class="fas fa-paper-plane me-2"></i>Send Message
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-4">
+            <div class="card">
+                <div class="card-body">
+                    <h4 class="fw-bold mb-4">
+                        <i class="fas fa-info-circle me-2"></i>Get in Touch
+                    </h4>
+
+                    <div class="mb-4">
+                        <h6 class="fw-bold">
+                            <i class="fas fa-envelope me-2 text-primary"></i>Email
+                        </h6>
+                        <p class="mb-0">info@collegeprojects.com</p>
+                    </div>
+
+                    <div class="mb-4">
+                        <h6 class="fw-bold">
+                            <i class="fas fa-phone me-2 text-primary"></i>Phone
+                        </h6>
+                        <p class="mb-0">+91 98765 43210</p>
+                    </div>
+
+                    <div class="mb-4">
+                        <h6 class="fw-bold">
+                            <i class="fas fa-clock me-2 text-primary"></i>Business Hours
+                        </h6>
+                        <p class="mb-0">Monday - Friday: 9:00 AM - 6:00 PM<br> Saturday: 10:00 AM - 4:00 PM</p>
+                    </div>
+
+                    <div class="mb-4">
+                        <h6 class="fw-bold">
+                            <i class="fas fa-map-marker-alt me-2 text-primary"></i>Address
+                        </h6>
+                        <p class="mb-0">123 Tech Street<br> Bangalore, Karnataka 560001<br> India
+                        </p>
+                    </div>
+
+                    <div class="social-links">
+                        <h6 class="fw-bold mb-3">Follow Us</h6>
+                        <a href="#" class="btn btn-outline-primary me-2">
+                            <i class="fab fa-facebook"></i>
+                        </a>
+                        <a href="#" class="btn btn-outline-primary me-2">
+                            <i class="fab fa-twitter"></i>
+                        </a>
+                        <a href="#" class="btn btn-outline-primary me-2">
+                            <i class="fab fa-instagram"></i>
+                        </a>
+                        <a href="#" class="btn btn-outline-primary">
+                            <i class="fab fa-linkedin"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- FAQ Section -->
+    <div class="row mt-5">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header">
+                    <h4 class="mb-0">
+                        <i class="fas fa-question-circle me-2"></i>Frequently Asked Questions
+                    </h4>
+                </div>
+                <div class="card-body">
+                    <div class="accordion" id="faqAccordion">
+                        <div class="accordion-item">
+                            <h2 class="accordion-header" id="faq1">
+                                <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapse1">
+                                    How do I purchase a project?
+                                </button>
+                            </h2>
+                            <div id="collapse1" class="accordion-collapse collapse show" data-bs-parent="#faqAccordion">
+                                <div class="accordion-body">
+                                    Simply browse our project collection, select the one you want, and click the "Purchase" button. You'll be redirected to our secure payment gateway to complete the transaction.
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="accordion-item">
+                            <h2 class="accordion-header" id="faq2">
+                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapse2">
+                                    What payment methods do you accept?
+                                </button>
+                            </h2>
+                            <div id="collapse2" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+                                <div class="accordion-body">
+                                    We accept all major credit cards, debit cards, UPI, and net banking through our secure payment gateway.
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="accordion-item">
+                            <h2 class="accordion-header" id="faq3">
+                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapse3">
+                                    Can I request a custom project?
+                                </button>
+                            </h2>
+                            <div id="collapse3" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+                                <div class="accordion-body">
+                                    Yes! We offer custom project development services. Please use the contact form above to describe your requirements, and we'll get back to you with a quote.
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="accordion-item">
+                            <h2 class="accordion-header" id="faq4">
+                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapse4">
+                                    What's included with each project?
+                                </button>
+                            </h2>
+                            <div id="collapse4" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+                                <div class="accordion-body">
+                                    Each project includes complete source code, detailed documentation, setup instructions, database schema, and technical specifications.
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

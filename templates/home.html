@@ -1,0 +1,186 @@
+{% extends "base.html" %} {% block title %}Home - College Projects Store{% endblock %} {% block content %}
+<!-- Hero Section -->
+<section class="hero-section">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-lg-6">
+                <h1 class="display-4 fw-bold mb-4">Get Ready-to-Use College Projects</h1>
+                <p class="lead mb-4">Access a vast collection of high-quality projects with complete source code, documentation, and step-by-step guides. Perfect for students looking to excel in their academic projects.</p>
+                <div class="d-flex gap-3">
+                    <a href="{{ url_for('projects') }}" class="btn btn-light btn-lg">
+                        <i class="fas fa-search me-2"></i>Browse Projects
+                    </a>
+                    <a href="{{ url_for('contact') }}" class="btn btn-outline-light btn-lg">
+                        <i class="fas fa-phone me-2"></i>Request Custom
+                    </a>
+                </div>
+            </div>
+            <div class="col-lg-6 text-center">
+                <i class="fas fa-laptop-code" style="font-size: 8rem; opacity: 0.8;"></i>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Features Section -->
+<section class="py-5 bg-light">
+    <div class="container">
+        <div class="row text-center mb-5">
+            <div class="col-lg-8 mx-auto">
+                <h2 class="display-6 fw-bold">Why Choose Our Projects?</h2>
+                <p class="lead text-muted">We provide the best quality projects to help you succeed in your academic journey.</p>
+            </div>
+        </div>
+        <div class="row g-4">
+            <div class="col-md-4">
+                <div class="text-center">
+                    <div class="bg-primary text-white rounded-circle d-inline-flex align-items-center justify-content-center mb-3" style="width: 80px; height: 80px;">
+                        <i class="fas fa-code fa-2x"></i>
+                    </div>
+                    <h4>Complete Source Code</h4>
+                    <p class="text-muted">Get fully functional projects with clean, well-documented source code that you can understand and modify.</p>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="text-center">
+                    <div class="bg-success text-white rounded-circle d-inline-flex align-items-center justify-content-center mb-3" style="width: 80px; height: 80px;">
+                        <i class="fas fa-book fa-2x"></i>
+                    </div>
+                    <h4>Detailed Documentation</h4>
+                    <p class="text-muted">Comprehensive documentation including setup instructions, user manual, and technical specifications.</p>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="text-center">
+                    <div class="bg-warning text-white rounded-circle d-inline-flex align-items-center justify-content-center mb-3" style="width: 80px; height: 80px;">
+                        <i class="fas fa-headset fa-2x"></i>
+                    </div>
+                    <h4>24/7 Support</h4>
+                    <p class="text-muted">Get help whenever you need it. Our support team is always ready to assist you with any questions.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Featured Projects Section -->
+<section class="py-5">
+    <div class="container">
+        <div class="row mb-5">
+            <div class="col-lg-8">
+                <h2 class="display-6 fw-bold">Featured Projects</h2>
+                <p class="lead text-muted">Check out our most popular projects that students love.</p>
+            </div>
+            <div class="col-lg-4 text-end">
+                <a href="{{ url_for('projects') }}" class="btn btn-primary">
+                    View All Projects <i class="fas fa-arrow-right ms-2"></i>
+                </a>
+            </div>
+        </div>
+
+        <div class="row g-4">
+            {% for project in featured_projects %}
+            <div class="col-lg-4 col-md-6">
+                <div class="card h-100">
+                    {% if project.preview_image %}
+                    <img src="{{ url_for('uploaded_file', filename=project.preview_image) }}" class="card-img-top" alt="{{ project.title }}" style="height: 200px; object-fit: cover;"> {% else %}
+                    <div class="card-img-top bg-light d-flex align-items-center justify-content-center" style="height: 200px;">
+                        <i class="fas fa-file-code fa-3x text-muted"></i>
+                    </div>
+                    {% endif %}
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between align-items-start mb-2">
+                            <span class="badge bg-primary">{{ project.category }}</span>
+                            <span class="price-tag">₹{{ "%.0f"|format(project.price) }}</span>
+                        </div>
+                        <h5 class="card-title">{{ project.title }}</h5>
+                        <p class="card-text text-muted">{{ project.description[:100] }}{% if project.description|length > 100 %}...{% endif %}</p>
+                        <div class="mb-3">
+                            <small class="text-muted">
+                                <i class="fas fa-tags me-1"></i>{{ project.tech_stack }}
+                            </small>
+                        </div>
+                        <div class="d-flex justify-content-between align-items-center">
+                            <small class="text-muted">
+                                <i class="fas fa-graduation-cap me-1"></i>{{ project.branch }}
+                            </small>
+                            <a href="{{ url_for('project_detail', project_id=project.id) }}" class="btn btn-outline-primary btn-sm">
+                                View Details
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+
+<!-- Categories Section -->
+<section class="py-5 bg-light">
+    <div class="container">
+        <div class="row text-center mb-5">
+            <div class="col-lg-8 mx-auto">
+                <h2 class="display-6 fw-bold">Project Categories</h2>
+                <p class="lead text-muted">Explore projects across different categories and technologies.</p>
+            </div>
+        </div>
+        <div class="row g-4">
+            <div class="col-md-3">
+                <div class="card text-center h-100">
+                    <div class="card-body">
+                        <i class="fas fa-globe fa-3x text-primary mb-3"></i>
+                        <h5>Web Development</h5>
+                        <p class="text-muted">Modern web applications using latest technologies</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card text-center h-100">
+                    <div class="card-body">
+                        <i class="fas fa-mobile-alt fa-3x text-success mb-3"></i>
+                        <h5>Mobile Apps</h5>
+                        <p class="text-muted">Android and iOS applications</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card text-center h-100">
+                    <div class="card-body">
+                        <i class="fas fa-desktop fa-3x text-warning mb-3"></i>
+                        <h5>Desktop Apps</h5>
+                        <p class="text-muted">Cross-platform desktop applications</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card text-center h-100">
+                    <div class="card-body">
+                        <i class="fas fa-robot fa-3x text-danger mb-3"></i>
+                        <h5>AI & ML</h5>
+                        <p class="text-muted">Machine learning and artificial intelligence projects</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- CTA Section -->
+<section class="py-5" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white;">
+    <div class="container text-center">
+        <h2 class="display-6 fw-bold mb-4">Ready to Get Started?</h2>
+        <p class="lead mb-4">Join thousands of students who have successfully completed their projects with our help.</p>
+        <div class="d-flex gap-3 justify-content-center">
+            {% if not current_user.is_authenticated %}
+            <a href="{{ url_for('signup') }}" class="btn btn-light btn-lg">
+                <i class="fas fa-user-plus me-2"></i>Sign Up Now
+            </a>
+            {% endif %}
+            <a href="{{ url_for('contact') }}" class="btn btn-outline-light btn-lg">
+                <i class="fas fa-envelope me-2"></i>Request Custom Project
+            </a>
+        </div>
+    </div>
+</section>
+{% endblock %}

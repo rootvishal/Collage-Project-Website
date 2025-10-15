@@ -9,20 +9,14 @@ import uuid
 from functools import wraps
 
 app = Flask(__name__)
-app.config['SECRET_KEY'] = 'your-secret-key-change-this-in-production'
-# Database configuration - Update these values for your MySQL setup
-MYSQL_USER = 'root'
-MYSQL_PASSWORD = 'Vishal@2003'  # Your MySQL root password
-MYSQL_HOST = 'localhost'
-MYSQL_DATABASE = 'college_projects'
-
-# URL encode the password to handle special characters like @
-import urllib.parse
-encoded_password = urllib.parse.quote_plus(MYSQL_PASSWORD)
-app.config['SQLALCHEMY_DATABASE_URI'] = f'mysql://{MYSQL_USER}:{encoded_password}@{MYSQL_HOST}/{MYSQL_DATABASE}'
-app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+app.config.from_object('config.DevelopmentConfig')
 app.config['UPLOAD_FOLDER'] = 'uploads'
 app.config['MAX_CONTENT_LENGTH'] = 16 * 1024 * 1024  # 16MB max file size
+
+def nl2br(string):
+    return string.replace('\n', '<br>\n')
+
+app.jinja_env.filters['nl2br'] = nl2br
 
 # Ensure upload directory exists
 os.makedirs(app.config['UPLOAD_FOLDER'], exist_ok=True)
@@ -365,6 +359,95 @@ def admin_contacts():
 def admin_inquiries():
     inquiries = Inquiry.query.order_by(Inquiry.created_at.desc()).all()
     return render_template('admin/inquiries.html', inquiries=inquiries)
+@app.route('/login', methods=['GET', 'POST'])
+def login():
+    print("Login route accessed")  # Add this line
+    if current_user.is_authenticated:
+        if current_user.is_admin:
+            return redirect(url_for('admin_dashboard'))
+        return redirect(url_for('home'))
+    if request.method == 'POST':
+        email = request.form['email']
+        password = request.form['password']
+        user = User.query.filter_by(email=email).first()
+        if user and check_password_hash(user.password_hash, password):
+            login_user(user)
+            if user.is_admin:
+                return redirect(url_for('admin_dashboard'))
+            next_page = request.args.get('next')
+            return redirect(next_page) if next_page else redirect(url_for('home'))
+        else:
+            flash('Invalid email or password', 'error')
+    return render_template('admin/login.html')
+    
+@app.route('/register', methods=['GET', 'POST'])
+def register():
+    if current_user.is_authenticated:
+        return redirect(url_for('home'))
+    
+    if request.method == 'POST':
+        name = request.form['name']
+        email = request.form['email']
+        password = request.form['password']
+        
+        if User.query.filter_by(email=email).first():
+            flash('Email already registered', 'error')
+            return render_template('register.html')
+        
+        user = User(
+            name=name,
+            email=email,
+            password_hash=generate_password_hash(password)
+        )
+        db.session.add(user)
+        db.session.commit()
+        flash('Registration successful! Please log in.', 'success')
+        return redirect(url_for('login'))
+    
+    return render_template('register.html')
+
+@app.route('/signup', methods=['GET', 'POST'])
+def signup():
+    # Redirect to the register route
+    return redirect(url_for('register'))
+
+@app.route('/logout')
+@login_required
+def logout():
+    logout_user()
+    flash('You have been logged out.', 'success')
+    return redirect(url_for('home'))
+
+@app.route('/buy/<int:project_id>', methods=['POST'])
+@login_required
+def buy_project(project_id):
+    project = Project.query.get_or_404(project_id)
+    
+    # For demo, assume instant payment completion
+    order = Order(
+        user_id=current_user.id,
+        project_id=project_id,
+        amount=project.price,
+        payment_status='completed',
+        transaction_id=str(uuid.uuid4())
+    )
+    db.session.add(order)
+    db.session.commit()
+    
+    flash(f'Project "{project.title}" purchased successfully! You can download it now.', 'success')
+    return redirect(url_for('project_detail', project_id=project_id))
+
+@app.route('/download/<int:order_id>')
+@login_required
+def download_project(order_id):
+    order = Order.query.filter_by(id=order_id, user_id=current_user.id, payment_status='completed').first_or_404()
+    
+    file_path = os.path.join(app.config['UPLOAD_FOLDER'], order.project.file_path)
+    if not os.path.exists(file_path):
+        flash('File not found.', 'error')
+        return redirect(url_for('home'))
+    
+    return send_file(file_path, as_attachment=True, download_name=order.project.title + '.zip')
 
 
 
